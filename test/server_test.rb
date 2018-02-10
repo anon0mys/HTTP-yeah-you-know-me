@@ -8,6 +8,6 @@ class ServerTest < Minitest::Test
 
     assert_instance_of Server, server
     assert_instance_of TCPServer, server.tcp_server
-    refute server.request.nil?
+    refute server.request_getter.nil?
   end
 end

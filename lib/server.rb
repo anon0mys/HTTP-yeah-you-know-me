@@ -2,14 +2,14 @@ require 'socket'
 
 # Server class for listenening and accessing database
 class Server
-  attr_reader :tcp_server
+  attr_reader :tcp_server, :client
   def initialize
     @tcp_server = TCPServer.new(9292)
-    @client = @tcp_server.accept
-    request
+    @client = nil
   end
 
-  def request
+  def request_getter
+    @client = @tcp_server.accept
     @client.gets
   end
 end

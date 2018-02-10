@@ -12,6 +12,7 @@ class Runner
   def run
     loop do
       @server.request_getter
+      break if @requests == 2
       @requests += 1
       response
       @server.client.close
@@ -30,5 +31,3 @@ class Runner
     @server.client.puts output
   end
 end
-
-Runner.new.run

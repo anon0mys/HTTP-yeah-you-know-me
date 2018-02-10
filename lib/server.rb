@@ -5,6 +5,7 @@ class Server
   attr_reader :tcp_server, :client
   def initialize
     @tcp_server = TCPServer.new(9292)
+    @tcp_server.listen(1)
     @client = nil
   end
 

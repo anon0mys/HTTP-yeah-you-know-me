@@ -1,4 +1,6 @@
 require_relative 'server'
+require_relative 'parser'
+require 'pry'
 
 # Runner class for handling server requests and responses
 class Runner
@@ -11,23 +13,17 @@ class Runner
 
   def run
     loop do
-      @server.request_getter
+      request_lines = @server.request_getter
       @requests += 1
-      response
+      response(request_lines)
       @server.client.close
       break if @requests == 2
     end
   end
 
-  def response
-    response = '<pre>' + "Hello, World! (#{@requests})" + '</pre>'
-    output = "<html><head></head><body>#{response}</body></html>"
-    headers = ['http/1.1 200 ok',
-               "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
-               'server: ruby',
-               'content-type: text/html; charset=iso-8859-1',
-               "content-length: #{output.length}\r\n\r\n"].join("\r\n")
-    @server.client.puts headers
+  def response(request_lines)
+    output = RequestParser.output(@requests)
+    @server.client.puts RequestParser.headers(output.length)
     @server.client.puts output
   end
 end

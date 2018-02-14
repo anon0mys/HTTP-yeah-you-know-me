@@ -1,9 +1,11 @@
+require './lib/request_parser'
+require 'pry'
 
 # Parses HTTP requests and creates response
-class RequestParser
-  def self.output(requests)
-    response = '<pre>' + "Hello, World! (#{requests})" + '</pre>'
-    "<html><head></head><body>#{response}</body></html>"
+class Router
+  def self.body(request_count, diagnostics)
+    hello = '<pre>' + "Hello, World! (#{request_count})" + '</pre>'
+    "<html><head></head><body>#{hello}#{diagnostics}</body></html>"
   end
 
   def self.headers(output_length)

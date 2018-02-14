@@ -1,5 +1,6 @@
-require_relative 'server'
-require_relative 'parser'
+require './lib/server'
+require './lib/router'
+require './lib/request_parser'
 require 'pry'
 
 # Runner class for handling server requests and responses
@@ -22,8 +23,14 @@ class Runner
   end
 
   def response(request_lines)
-    output = RequestParser.output(@requests)
-    @server.client.puts RequestParser.headers(output.length)
-    @server.client.puts output
+    body = Router.body(@requests, diagnostics(request_lines))
+    @server.client.puts Router.headers(body.length)
+    @server.client.puts body
+  end
+
+  def diagnostics(request_lines)
+    parser = RequestParser.new
+    parser.diagnostics_parser(request_lines)
+    parser.print_diagnostics
   end
 end

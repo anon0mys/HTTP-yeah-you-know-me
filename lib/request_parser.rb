@@ -1,18 +1,11 @@
 require 'pry'
 
-# Parses HTTP request and builds diagnostics hash
+# Parses HTTP request into diagnostics hash
 class RequestParser
   attr_reader :diagnostics
 
   def initialize
     @diagnostics = {}
-  end
-
-  def print_diagnostics
-    content = @diagnostics.map do |key, value|
-      "#{key} #{value}"
-    end
-    '<pre><br>' + content.join('<br>') + '<br></pre>'
   end
 
   def diagnostics_parser(request_lines)

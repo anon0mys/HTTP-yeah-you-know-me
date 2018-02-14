@@ -1,9 +1,9 @@
 require 'socket'
 
-# Server class for listenening and accessing database
+# Server class for receiving client requests
 class Server
   attr_reader :tcp_server, :client
-  
+
   def initialize(port = 9292)
     @tcp_server = TCPServer.new(port)
     @tcp_server.listen(1)

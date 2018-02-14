@@ -11,15 +11,13 @@ class ServerTest < Minitest::Test
     'application/xml;q=0.9,image/webp,*/*;q=0.8 '\
     '</pre>'
   end
-  
-  def test_server_responds_hello_world
+
+  def test_server_responds_on_root_path
     client = MockClient.new
-    client.get
+    client.root_request
 
-    assert client.response.body.include?('Hello, World! (1)')
-
-    client.get
-    assert client.response.body.include?('Hello, World! (2)')
     assert client.response.body.include?(diagnostics_expected)
+
+    client.shutdown_request
   end
 end

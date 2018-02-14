@@ -1,18 +1,35 @@
-require './lib/request_parser'
-require 'pry'
+require './lib/paths/root'
+require './lib/paths/hello'
+require './lib/paths/datetime'
+require './lib/paths/shutdown'
 
-# Parses HTTP requests and creates response
+# Determines path based on diagnostics hash parsed by diagnostics_parser
 class Router
-  def self.body(request_count, diagnostics)
-    hello = '<pre>' + "Hello, World! (#{request_count})" + '</pre>'
-    "<html><head></head><body>#{hello}#{diagnostics}</body></html>"
+  attr_reader :path
+
+  def initialize
+    @paths = {
+      '/' => 'Root',
+      '/hello' => 'Hello',
+      '/datetime' => 'DatePath',
+      '/shutdown' => 'Shutdown'
+    }
+    @endpoint = nil
+    @hello_requests = 0
   end
 
-  def self.headers(output_length)
-    ['http/1.1 200 ok',
-     "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
-     'server: ruby',
-     'content-type: text/html; charset=iso-8859-1',
-     "content-length: #{output_length}\r\n\r\n"].join("\r\n")
+  def assign_endpoint(path, requests)
+    if path == '/hello'
+      @hello_requests += 1
+      requests = @hello_requests
+    end
+    @endpoint = Object.const_get(@paths[path]).new(requests)
+  end
+
+  def respond(diagnostics, requests)
+    assign_endpoint(diagnostics['Path:'], requests)
+    body = @endpoint.body(diagnostics)
+    { headers: @endpoint.headers(body.length),
+      body: body }
   end
 end

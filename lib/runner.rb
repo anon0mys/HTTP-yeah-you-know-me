@@ -1,36 +1,40 @@
 require './lib/server'
-require './lib/router'
 require './lib/request_parser'
+require './lib/router'
 require 'pry'
 
-# Runner class for handling server requests and responses
+# Runner class for mediating requests and responses
 class Runner
   attr_reader :server, :requests
 
   def initialize
     @server = Server.new
+    @router = Router.new
     @requests = 0
+    @current_path = nil
   end
 
   def run
     loop do
+      return @server.tcp_server.close if @current_path == '/shutdown'
       request_lines = @server.request_getter
       @requests += 1
       response(request_lines)
       @server.client.close
-      break if @requests == 2
     end
   end
 
   def response(request_lines)
-    body = Router.body(@requests, diagnostics(request_lines))
-    @server.client.puts Router.headers(body.length)
-    @server.client.puts body
+    diagnostics = build_diagnostics(request_lines)
+    output = @router.respond(diagnostics, @requests)
+    @server.client.puts output[:headers]
+    @server.client.puts output[:body]
   end
 
-  def diagnostics(request_lines)
+  def build_diagnostics(request_lines)
     parser = RequestParser.new
     parser.diagnostics_parser(request_lines)
-    parser.print_diagnostics
+    @current_path = parser.diagnostics['Path:']
+    parser.diagnostics
   end
 end

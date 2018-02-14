@@ -4,6 +4,7 @@ require './lib/server'
 # Tests sever class
 class ServerTest < Minitest::Test
   def test_server_initializes_and_returns_request
+    # skip
     server = Server.new
 
     assert_instance_of Server, server
@@ -13,6 +14,7 @@ class ServerTest < Minitest::Test
   end
 
   def test_request_getter_returns_request
+    # skip
     server = Server.new
 
     refute server.request_getter.nil?

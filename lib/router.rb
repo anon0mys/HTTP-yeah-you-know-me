@@ -12,7 +12,8 @@ class Router
       '/' => 'Root',
       '/hello' => 'Hello',
       '/datetime' => 'DatePath',
-      '/shutdown' => 'Shutdown'
+      '/shutdown' => 'Shutdown',
+      '/word_search' => 'WordSearch'
     }
     @endpoint = nil
     @hello_requests = 0

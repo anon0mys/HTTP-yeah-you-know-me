@@ -8,8 +8,12 @@ class Root
   end
 
   def body(diagnostics)
-    output = print_diagnostics(diagnostics)
-    "<html><head></head><body>#{output}</body></html>"
+    body_builder(diagnostics)
+  end
+
+  def body_builder(diagnostics, output = nil)
+    footer = print_diagnostics(diagnostics)
+    "<html><head></head><body>#{output}#{footer}</body></html>"
   end
 
   def headers(output_length)

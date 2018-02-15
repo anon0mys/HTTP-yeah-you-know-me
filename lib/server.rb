@@ -13,7 +13,7 @@ class Server
   def request_getter
     @client = @tcp_server.accept
     request_lines = []
-    while line = @client.gets and !line.chomp.empty?
+    while (line = @client.gets) and !line.chomp.empty?
       request_lines << line.chomp
     end
     request_lines

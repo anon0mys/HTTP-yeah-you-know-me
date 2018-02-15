@@ -7,8 +7,7 @@ class Hello < Root
   end
 
   def body(diagnostics)
-    output = print_diagnostics(diagnostics)
     hello = '<pre>' + "Hello, World! (#{@hello_count})" + '</pre>'
-    "<html><head></head><body>#{hello}#{output}</body></html>"
+    body_builder(diagnostics, hello)
   end
 end

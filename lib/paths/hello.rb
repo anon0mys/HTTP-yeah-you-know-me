@@ -1,7 +1,7 @@
-require './lib/paths/root'
+require './lib/response'
 
 # Response builder for /hello path
-class Hello < Root
+class Hello < Response
   def initialize(hello_requests)
     @hello_count = hello_requests
   end

@@ -1,11 +1,9 @@
-require './lib/paths/root'
+require './lib/response'
 
 # Response builder for /datetime path
-class DatePath < Root
+class DatePath < Response
   def body(diagnostics)
-    output = print_diagnostics(diagnostics)
-    formatted_date = Time.now.strftime('%I:%M%p on %A, %B %e, %Y')
-    date = '<pre>' + formatted_date + '</pre>'
-    "<html><head></head><body>#{date}#{output}</body></html>"
+    date = "<pre>#{Time.now.strftime('%I:%M%p on %A, %B %e, %Y')}</pre>"
+    body_builder(diagnostics, date)
   end
 end

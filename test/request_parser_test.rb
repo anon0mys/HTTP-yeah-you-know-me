@@ -47,6 +47,18 @@ class RequestParserTest < Minitest::Test
     assert_equal expected, @parser.diagnostics
   end
 
+  def test_verb_line_parser_handles_parameters
+    given = 'GET /word_search?param=value&param2=value2 HTTP/1.1'
+    expected = { 'Verb:' => 'GET',
+                 'Path:' => '/word_search',
+                 'Protocol:' => 'HTTP/1.1',
+                 'Params:' => { 'param' => 'value',
+                                'param2' => 'value2' } }
+    @parser.verb_line_parser(given)
+
+    assert_equal expected, @parser.diagnostics
+  end
+
   def test_host_parser
     given = { 'Host' => '127.0.0.1:9292' }
     expected = { 'Host:' => '127.0.0.1',

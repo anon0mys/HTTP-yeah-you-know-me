@@ -2,6 +2,7 @@ require './lib/paths/root'
 require './lib/paths/hello'
 require './lib/paths/datetime'
 require './lib/paths/shutdown'
+require './lib/paths/word_search'
 
 # Determines path based on diagnostics hash parsed by diagnostics_parser
 class Router
@@ -12,7 +13,8 @@ class Router
       '/' => 'Root',
       '/hello' => 'Hello',
       '/datetime' => 'DatePath',
-      '/shutdown' => 'Shutdown'
+      '/shutdown' => 'Shutdown',
+      '/word_search' => 'WordSearch'
     }
     @endpoint = nil
     @hello_requests = 0

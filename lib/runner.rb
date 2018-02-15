@@ -38,3 +38,5 @@ class Runner
     parser.diagnostics
   end
 end
+
+Runner.new.run

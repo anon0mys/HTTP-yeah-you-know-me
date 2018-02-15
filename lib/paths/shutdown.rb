@@ -1,10 +1,9 @@
-require './lib/paths/root'
+require './lib/response'
 
 # Response builder for /shutdown path
-class Shutdown < Root
+class Shutdown < Response
   def body(diagnostics)
-    output = print_diagnostics(diagnostics)
     total = '<pre>' + "Total Requests (#{@requests})" + '</pre>'
-    "<html><head></head><body>#{total}#{output}</body></html>"
+    body_builder(diagnostics, total)
   end
 end

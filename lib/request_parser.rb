@@ -21,12 +21,23 @@ class RequestParser
     end.to_h
   end
 
+  # Split into 3?
   def verb_line_parser(verb_line)
     keys = %w[Verb: Path: Protocol:]
     values = verb_line.split(' ')
     (0...keys.length).each do |index|
       @diagnostics[keys[index]] = values[index]
     end
+    params_parser if @diagnostics['Path:'].include?('?')
+  end
+
+  def params_parser
+    parameters = @diagnostics['Path:'].split('?')
+    @diagnostics['Path:'] = parameters.shift
+    param_string = parameters.shift
+    @diagnostics['Params:'] = param_string.split('&').map do |param_pair|
+      param_pair.split('=')
+    end.to_h
   end
 
   def host_parser(request)

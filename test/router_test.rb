@@ -59,4 +59,32 @@ class RouterTest < Minitest::Test
 
     assert hello_two.include?('Hello, World! (2)')
   end
+
+  def test_it_finds_path
+    router = Router.new
+    hello = stub_diagnostics('/hello')
+    game = stub_post_diagnostics('/start_game')
+    root = stub_diagnostics('/')
+
+    assert_instance_of Hello, router.find_path(hello, 1, nil)
+    assert_instance_of Game, router.find_path(game, 1, 'guess')
+    assert_instance_of Root, router.find_path(root, 1, nil)
+  end
+
+  def test_it_creates_game_and_sets_endpoint
+    router = Router.new
+    new_game_diag = stub_post_diagnostics('/start_game')
+    router.game(new_game_diag, 'content')
+
+    assert_instance_of Game, router.current_game
+    assert_equal router.current_game, router.endpoint
+  end
+
+  def test_new_game_outputs_body
+    router = Router.new
+    diagnostics = stub_post_diagnostics('/start_game')
+    expected = '<pre>Good Luck!</pre>'
+
+    assert router.respond(diagnostics, 12)[:body].include?(expected)
+  end
 end

@@ -26,7 +26,7 @@ class Runner
 
   def response(request_lines)
     diagnostics = build_diagnostics(request_lines)
-    content = @server.client.read(diagnostics['Content-Length:'])
+    content = read_content(diagnostics)
     output = @router.respond(diagnostics, @requests, content)
     @server.client.puts output[:headers]
     @server.client.puts output[:body]
@@ -37,5 +37,11 @@ class Runner
     parser.diagnostics_parser(request_lines)
     @current_path = parser.diagnostics['Path:']
     parser.diagnostics
+  end
+
+  def read_content(diagnostics)
+    if diagnostics.keys.include?('Content-Length:')
+      @server.client.read(diagnostics['Content-Length:'])
+    end
   end
 end

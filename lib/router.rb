@@ -21,10 +21,6 @@ class Router
     @endpoint = nil
     @hello_requests = 0
     @current_game = nil
-    @redirects = [ '301 Moved Permanently',
-                   '302 Found',
-                   '403 Forbidden',
-                   '404 Not Found' ]
   end
 
   def find_path(diagnostics, requests, content)
@@ -44,8 +40,10 @@ class Router
   end
 
   def respond(diagnostics, requests, content = nil)
+    redirects = ['301 Moved Permanently', '302 Found',
+                 '403 Forbidden', '404 Not Found']
     path = find_path(diagnostics, requests, content)
-    if @redirects.include?(path)
+    if redirects.include?(path)
       redirect?(diagnostics, path)
     else
       redirect?(diagnostics)

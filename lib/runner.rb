@@ -5,7 +5,7 @@ require 'pry'
 
 # Runner class for mediating requests and responses
 class Runner
-  attr_reader :server, :requests
+  attr_reader :server, :requests, :current_path
 
   def initialize
     @server = Server.new
@@ -26,7 +26,8 @@ class Runner
 
   def response(request_lines)
     diagnostics = build_diagnostics(request_lines)
-    output = @router.respond(diagnostics, @requests)
+    content = read_content(diagnostics)
+    output = @router.respond(diagnostics, @requests, content)
     @server.client.puts output[:headers]
     @server.client.puts output[:body]
   end
@@ -37,6 +38,10 @@ class Runner
     @current_path = parser.diagnostics['Path:']
     parser.diagnostics
   end
-end
 
-Runner.new.run
+  def read_content(diagnostics)
+    if diagnostics.keys.include?('Content-Length:')
+      @server.client.read(diagnostics['Content-Length:'])
+    end
+  end
+end

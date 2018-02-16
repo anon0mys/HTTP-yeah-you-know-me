@@ -24,4 +24,12 @@ class MockClient
   def datetime_request
     @response = @connection.get '/datetime'
   end
+
+  def word_search_request
+    @response = @connection.get '/word_search?WORD=word&WORD2=sejif'
+  end
+
+  def game_post
+    @response = @connection.post '/game'
+  end
 end

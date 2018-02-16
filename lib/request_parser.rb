@@ -12,7 +12,7 @@ class RequestParser
     verb_line_parser(request_lines[0])
     request = format_request(request_lines)
     host_parser(request)
-    accept_parser(request)
+    the_rest_parser(request)
   end
 
   def format_request(request_lines)
@@ -47,7 +47,10 @@ class RequestParser
     @diagnostics['Origin:'] = host_line[0]
   end
 
-  def accept_parser(request)
+  def the_rest_parser(request)
+    if request.include?('Content-Length')
+      @diagnostics['Content-Length:'] = request['Content-Length'].to_i
+    end
     @diagnostics['Accept:'] = request['Accept']
   end
 end

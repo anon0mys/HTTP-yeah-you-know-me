@@ -3,36 +3,21 @@ require './lib/request_parser'
 
 # Tests parser class
 class RequestParserTest < Minitest::Test
+  include TestHelper
+
   def setup
     @parser = RequestParser.new
   end
 
-  def request_lines
-    ['GET / HTTP/1.1',
-     'Host: 127.0.0.1:9292',
-     'Accept: text/html,application/xhtml+xml,'\
-     'application/xml;q=0.9,image/webp,*/*;q=0.8',
-     'User-Agent: Faraday v0.14.0',
-     'Accept-Language: en-US,en;q=0.8']
-  end
-
   def test_format_request
-    expected = { 'Host' => '127.0.0.1:9292',
-                 'Accept' => 'text/html,application/xhtml+xml,'\
-                 'application/xml;q=0.9,image/webp,*/*;q=0.8',
-                 'User-Agent' => 'Faraday v0.14.0',
-                 'Accept-Language' => 'en-US,en;q=0.8' }
+    expected = stub_get_hash
 
-    assert_equal expected, @parser.format_request(request_lines)
+    assert_equal expected, @parser.format_request(stub_get_lines('/'))
   end
 
   def test_build_diagnostics_hash
-    expected = { 'Verb:' => 'GET', 'Path:' => '/',
-                 'Protocol:' => 'HTTP/1.1', 'Host:' => '127.0.0.1',
-                 'Port:' => '9292', 'Origin:' => '127.0.0.1',
-                 'Accept:' => 'text/html,application/xhtml+xml,'\
-                 'application/xml;q=0.9,image/webp,*/*;q=0.8' }
-    @parser.diagnostics_parser(request_lines)
+    expected = stub_diagnostics('/')
+    @parser.diagnostics_parser(stub_get_lines('/'))
 
     assert_equal expected, @parser.diagnostics
   end
@@ -65,6 +50,23 @@ class RequestParserTest < Minitest::Test
                  'Port:' => '9292',
                  'Origin:' => '127.0.0.1' }
     @parser.host_parser(given)
+
+    assert_equal expected, @parser.diagnostics
+  end
+
+  def test_the_rest_parser
+    given = { 'Content-Length' => '0',
+              'Accept' => '*/*' }
+    expected = { 'Content-Length:' => 0,
+                 'Accept:' => '*/*' }
+    @parser.the_rest_parser(given)
+
+    assert_equal expected, @parser.diagnostics
+  end
+
+  def test_parse_post_request
+    expected = stub_post_diagnostics('/start_game')
+    @parser.diagnostics_parser(stub_post_lines('/start_game'))
 
     assert_equal expected, @parser.diagnostics
   end

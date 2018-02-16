@@ -28,7 +28,7 @@ class Router
     @endpoint = Object.const_get(@paths[path]).new(requests)
   end
 
-  def respond(diagnostics, requests)
+  def respond(diagnostics, requests, content = nil)
     assign_endpoint(diagnostics['Path:'], requests)
     body = @endpoint.body(diagnostics)
     { headers: @endpoint.headers(body.length),

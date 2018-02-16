@@ -8,18 +8,21 @@ require 'minitest/pride'
 module TestHelper
   def stub_post_lines(path)
     ["POST #{path} HTTP/1.1",
-     'Host: 127.0.0.1:9292',
-     'Connection: keep-alive',
+     'User-Agent: Faraday v0.14.0',
      'Content-Length: 0',
-     'Cache-Control: no-cache',
-     'Origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop',
-     'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) '\
-     'AppleWebKit/537.36 (KHTML, like Gecko) '\
-     'Chrome/64.0.3282.167 Safari/537.36',
-     'Postman-Token: 839f39a0-0a24-a6ad-873b-ce62b2ab3b03',
+     'Accept-Encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
      'Accept: */*',
-     'Accept-Encoding: gzip, deflate, br',
-     'Accept-Language: en-US,en;q=0.9,ro;q=0.8']
+     'Connection: close',
+     'Host: 127.0.0.1:9292',
+     'Content-Type: application/x-www-form-urlencoded']
+  end
+
+  def stub_post_diagnostics(path)
+    { 'Verb:' => 'POST', 'Path:' => path,
+      'Protocol:' => 'HTTP/1.1', 'Host:' => '127.0.0.1',
+      'Port:' => '9292', 'Origin:' => '127.0.0.1',
+      'Content-Length:' => 0,
+      'Accept:' => '*/*' }
   end
 
   def stub_get_lines(path)
@@ -35,6 +38,20 @@ module TestHelper
      'application/xml;q=0.9,image/webp,*/*;q=0.8',
      'Accept-Encoding: gzip, deflate, br',
      'Accept-Language: en-US,en;q=0.9,ro;q=0.8']
+  end
+
+  def stub_get_hash
+    { 'Host' => '127.0.0.1:9292',
+      'Connection' => 'keep-alive',
+      'Cache-Control' => 'no-cache',
+      'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) '\
+      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 '\
+      'Safari/537.36',
+      'Postman-Token' => '93c2f193-edcd-c8ac-b8f1-e778ce8484c1',
+      'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,'\
+      'image/webp,*/*;q=0.8',
+      'Accept-Encoding' => 'gzip, deflate, br',
+      'Accept-Language' => 'en-US,en;q=0.9,ro;q=0.8' }
   end
 
   def stub_diagnostics(path)

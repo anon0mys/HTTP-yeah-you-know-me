@@ -34,4 +34,8 @@ class ServerTest < Minitest::Test
 
     assert @client.response.body.include?('Hello World (5)')
   end
+
+  def test_server_takes_post_request
+    @client.game_post
+  end
 end

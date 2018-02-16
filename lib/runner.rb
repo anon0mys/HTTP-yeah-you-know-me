@@ -26,7 +26,8 @@ class Runner
 
   def response(request_lines)
     diagnostics = build_diagnostics(request_lines)
-    output = @router.respond(diagnostics, @requests)
+    content = @server.client.read(diagnostics['Content-Length:'])
+    output = @router.respond(diagnostics, @requests, content)
     @server.client.puts output[:headers]
     @server.client.puts output[:body]
   end

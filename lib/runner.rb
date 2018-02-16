@@ -5,7 +5,7 @@ require 'pry'
 
 # Runner class for mediating requests and responses
 class Runner
-  attr_reader :server, :requests
+  attr_reader :server, :requests, :current_path
 
   def initialize
     @server = Server.new
@@ -38,5 +38,3 @@ class Runner
     parser.diagnostics
   end
 end
-
-Runner.new.run

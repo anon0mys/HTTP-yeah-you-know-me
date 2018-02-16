@@ -3,15 +3,7 @@ require './lib/paths/word_search'
 
 # Tests shutdown path
 class WordSearchTest < Minitest::Test
-  def diagnostics_input
-    { 'Verb:' => 'GET', 'Path:' => '/word_search',
-      'Protocol:' => 'HTTP/1.1', 'Host:' => '127.0.0.1',
-      'Port:' => '9292', 'Origin:' => '127.0.0.1',
-      'Accept:' => 'text/html,application/xhtml+xml,'\
-      'application/xml;q=0.9,image/webp,*/*;q=0.8',
-      'Params:' => { 'WORD:' => 'word',
-                     'WORD2:' => 'ijhsadgeoih' } }
-  end
+  include TestHelper
 
   def test_it_loads_dictionary
     tester = WordSearch.new(1)
@@ -42,6 +34,6 @@ class WordSearchTest < Minitest::Test
     tester = WordSearch.new(1)
     expected = 'word is a known word<br>ijhsadgeoih is not a known word'
 
-    assert tester.body(diagnostics_input).include?(expected)
+    assert tester.body(stub_diag_params('/word_search')).include?(expected)
   end
 end

@@ -11,10 +11,27 @@ class ServerTest < Minitest::Test
     'Accept: */*<br></pre></body></html>'
   end
 
-  def test_server_responds_on_root_path
-    client = MockClient.new
-    client.root_request
+  def setup
+    @client = MockClient.new
+  end
 
-    assert_equal diagnostics_expected, client.response.bodyra
+  def test_server_responds_on_root_path
+    @client.root_request
+
+    assert_equal diagnostics_expected, @client.response.body
+  end
+
+  def test_server_counts_for_hello_path
+    @client.hello_request
+
+    assert @client.response.body.include?('Hello World (1)')
+
+    @client.hello_request
+
+    assert @client.response.body.include?('Hello World (2)')
+
+    3.times { @client.hello_request }
+
+    assert @client.response.body.include?('Hello World (5)')
   end
 end

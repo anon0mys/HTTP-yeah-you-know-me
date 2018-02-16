@@ -4,6 +4,7 @@ require './lib/paths/datetime'
 require './lib/paths/shutdown'
 require './lib/paths/word_search'
 require './lib/paths/game'
+require './lib/paths/force_error'
 require './lib/response'
 require 'pry'
 
@@ -17,7 +18,8 @@ class Router
       '/hello' => 'Hello',
       '/datetime' => 'DatePath',
       '/shutdown' => 'Shutdown',
-      '/word_search' => 'WordSearch'
+      '/word_search' => 'WordSearch',
+      '/force_error' => 'ForceError'
     }
     @endpoint = Response.new(0)
     @hello_requests = 0

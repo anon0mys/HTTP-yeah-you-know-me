@@ -85,6 +85,15 @@ module TestHelper
      "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
      'server: ruby',
      'content-type: text/html; charset=iso-8859-1',
-     "content-length: 12\r\n\r\n"].join("\r\n")
+     "content-length: 240\r\n\r\n"].join("\r\n")
+  end
+
+  def stub_302_redirect_headers
+    ['http/1.1 302 Found',
+     'Location: http://127.0.0.1:9292/game',
+     "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+     'server: ruby',
+     'content-type: text/html; charset=iso-8859-1',
+     "content-length: 0\r\n\r\n"].join("\r\n")
   end
 end

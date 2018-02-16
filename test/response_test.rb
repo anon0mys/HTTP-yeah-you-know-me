@@ -16,6 +16,6 @@ class ResponseTest < Minitest::Test
     root = Response.new(1)
     expected = stub_headers
 
-    assert_equal expected, root.headers(12)
+    assert_equal expected, root.headers(240).join("\r\n")
   end
 end

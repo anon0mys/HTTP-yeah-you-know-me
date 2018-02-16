@@ -87,4 +87,39 @@ class RouterTest < Minitest::Test
 
     assert router.respond(diagnostics, 12)[:body].include?(expected)
   end
+
+  def test_game_get_request_outputs_body
+    router = Router.new
+    start = stub_post_diagnostics('/start_game')
+    guess = stub_post_diagnostics('/game')
+    request = stub_diagnostics('/game')
+    router.game(start, '')
+    router.game(guess, '1')
+    expected = '<pre>You guessed too low! Guesses: [1]</pre>'
+
+    assert router.respond(request, 4)[:body].include?(expected)
+  end
+
+  def test_it_redirects_on_game_post
+    router = Router.new
+    start = stub_post_diagnostics('/start_game')
+    guess = stub_post_diagnostics('/game')
+    router.game(start, '')
+    expected = stub_302_redirect_headers
+    response = router.redirect?(guess)
+
+    assert_equal expected, response[:headers]
+    assert_nil response[:body]
+  end
+
+  def test_build_response
+    router = Router.new
+    request = stub_diagnostics('/')
+    router.find_path(request, 1, nil)
+    response = router.build_response(request)
+    body = stub_diag_printout('/')
+
+    assert_equal stub_headers, response[:headers]
+    assert response[:body].include?(body)
+  end
 end

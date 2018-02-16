@@ -1,5 +1,6 @@
 require './lib/response'
 
+# Guessing game that responsds to POST and GET requests
 class Game < Response
   attr_reader :response, :guesses
   attr_accessor :number
@@ -22,8 +23,15 @@ class Game < Response
   end
 
   def correct
+    @response = "<pre>You got it right! Guesses: #{@guesses}</pre>"
   end
 
-  def incorrect()
+  def incorrect(guess)
+    hint = if guess > @number
+             'high'
+           elsif guess < @number
+             'low'
+           end
+    @response = "<pre>You guessed too #{hint}! Guesses: #{@guesses}</pre>"
   end
 end

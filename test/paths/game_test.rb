@@ -23,18 +23,34 @@ class GameTest < Minitest::Test
   def test_it_can_compare_numbers
     game = Game.new
     game.number = 10
-    game.play(stub_post_diagnostics('/game'), '1')
-    game.play(stub_post_diagnostics('/game'), '2')
-    expected = '<pre>You guessed too low! Guesses: [1,2]</pre>'
-    game.compare_guess
+    expected = '<pre>You guessed too low! Guesses: [1, 2]</pre>'
+    game.play('1')
+    game.play('2')
 
     assert_equal expected, game.response
   end
 
   def test_post_a_guess
     game = Game.new
-    game.play(stub_post_diagnostics('/game'), '14')
+    game.play('14')
 
     assert_equal [14], game.guesses
+  end
+
+  def test_it_sets_response_when_correct
+    game = Game.new
+    expected = '<pre>You got it right! Guesses: []</pre>'
+    game.correct
+
+    assert_equal expected, game.response
+  end
+
+  def test_it_sets_response_when_incorrect
+    game = Game.new
+    game.number = 5
+    expected = '<pre>You guessed too low! Guesses: []</pre>'
+    game.incorrect(3)
+
+    assert_equal expected, game.response
   end
 end

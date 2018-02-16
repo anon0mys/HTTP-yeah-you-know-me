@@ -25,9 +25,9 @@ class Router
 
   def find_path(diagnostics, requests, content)
     path = diagnostics['Path:']
+    return '404 Not Found' if path.nil?
     if path == '/hello'
-      @hello_requests += 1
-      assign_endpoint(path, @hello_requests)
+      assign_endpoint(path, @hello_requests += 1)
     elsif %w[/game /start_game].include?(path)
       game(diagnostics, content)
     else
@@ -40,19 +40,32 @@ class Router
   end
 
   def respond(diagnostics, requests, content = nil)
-    find_path(diagnostics, requests, content)
-    redirect?(diagnostics)
+    redirects = ['301 Moved Permanently', '302 Found',
+                 '403 Forbidden', '404 Not Found']
+    path = find_path(diagnostics, requests, content)
+    if redirects.include?(path)
+      redirect?(diagnostics, path)
+    else
+      redirect?(diagnostics)
+    end
   end
 
   def game(diagnostics, content)
     if diagnostics['Path:'] == '/start_game'
-      @current_game = Game.new
-      @endpoint = @current_game
+      start_game
     elsif diagnostics['Verb:'] == 'POST'
       @endpoint.play(content)
+      '302 Found'
     else
       @endpoint = @current_game
     end
+  end
+
+  def start_game
+    return '403 Forbidden' unless @current_game.nil?
+    @current_game = Game.new
+    @endpoint = @current_game
+    '301 Moved Permanently'
   end
 
   def build_response(diagnostics)
@@ -61,8 +74,8 @@ class Router
       body: body }
   end
 
-  def redirect?(diagnostics, response_code = '302 Found')
-    if diagnostics['Verb:'] == 'GET' || diagnostics['Path:'] == '/start_game'
+  def redirect?(diagnostics, response_code = nil)
+    if response_code.nil?
       build_response(diagnostics)
     else
       redirect_header = @endpoint.headers(0, response_code)

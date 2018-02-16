@@ -65,9 +65,10 @@ class RouterTest < Minitest::Test
     hello = stub_diagnostics('/hello')
     game = stub_post_diagnostics('/start_game')
     root = stub_diagnostics('/')
+    router.find_path(game, 1, 'guess')
 
     assert_instance_of Hello, router.find_path(hello, 1, nil)
-    assert_instance_of Game, router.find_path(game, 1, 'guess')
+    assert_instance_of Game, router.current_game
     assert_instance_of Root, router.find_path(root, 1, nil)
   end
 
@@ -80,12 +81,13 @@ class RouterTest < Minitest::Test
     assert_equal router.current_game, router.endpoint
   end
 
-  def test_new_game_outputs_body
+  def test_new_game_outputs_redirect
     router = Router.new
     diagnostics = stub_post_diagnostics('/start_game')
-    expected = '<pre>Good Luck!</pre>'
+    expected = '301 Moved Permanently'
+    response = router.respond(diagnostics, 1)
 
-    assert router.respond(diagnostics, 12)[:body].include?(expected)
+    assert response[:headers].include?(expected)
   end
 
   def test_game_get_request_outputs_body
@@ -106,7 +108,7 @@ class RouterTest < Minitest::Test
     guess = stub_post_diagnostics('/game')
     router.game(start, '')
     expected = stub_302_redirect_headers
-    response = router.redirect?(guess)
+    response = router.respond(guess, 1, 1)
 
     assert_equal expected, response[:headers]
     assert_nil response[:body]

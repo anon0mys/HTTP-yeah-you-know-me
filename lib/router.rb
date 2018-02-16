@@ -4,6 +4,7 @@ require './lib/paths/datetime'
 require './lib/paths/shutdown'
 require './lib/paths/word_search'
 require './lib/paths/game'
+require './lib/response'
 require 'pry'
 
 # Determines path based on diagnostics hash parsed by diagnostics_parser
@@ -18,19 +19,19 @@ class Router
       '/shutdown' => 'Shutdown',
       '/word_search' => 'WordSearch'
     }
-    @endpoint = nil
+    @endpoint = Response.new(0)
     @hello_requests = 0
     @current_game = nil
   end
 
   def find_path(diagnostics, requests, content)
     path = diagnostics['Path:']
-    return '404 Not Found' if path.nil?
     if path == '/hello'
       assign_endpoint(path, @hello_requests += 1)
     elsif %w[/game /start_game].include?(path)
       game(diagnostics, content)
     else
+      return '404 Not Found' unless @paths.include?(path)
       assign_endpoint(path, requests)
     end
   end

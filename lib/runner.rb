@@ -45,3 +45,5 @@ class Runner
     end
   end
 end
+
+Runner.new.run

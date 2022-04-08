@@ -16,9 +16,10 @@ class RequestParser
   end
 
   def format_request(request_lines)
-    request_lines[1..-1].map do |line|
+    thing = request_lines[1..-1].map do |line|
       line.split(': ') if line.include?(':')
     end.to_h
+    binding.pry
   end
 
   # Split into 3?
